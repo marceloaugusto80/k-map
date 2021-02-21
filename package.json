@@ -2,6 +2,8 @@
   "name": "k-map",
   "version": "0.0.1",
   "description": "Plot placemarks from kml files in a map.",
+  "author": "Marcelo Augusto R. A.",
+  "license": "ISC",
   "main": "dist/main/main.js",
   "scripts": {
     "test": "npx jest --config jest.config.js --no-cache",
@@ -10,8 +12,6 @@
     "build-all": "npm run build-renderer && npm run build-main",
     "start": "npm run build-all && npx electron ./dist/main/main.js"
   },
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@hot-loader/react-dom": "^17.0.1",
     "@types/jest": "^26.0.20",
