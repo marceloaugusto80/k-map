@@ -3,6 +3,7 @@ import MapEx from "../core/map-ex";
 import { MarkerLayer } from "../core/models";
 import KmlDropper from "./kml-dropper";
 import LayerList from "./layer-list";
+import "../core/string-extensions";
 
 
 interface State {
@@ -38,20 +39,23 @@ export default class MapView extends React.PureComponent<{}, State> {
     }
 
     addLayer = (layer: MarkerLayer) => {
+       
+        layer.name = layer.name.autoRename(this.state.layerNames);
+        this.setState({ layerNames: [... this.state.layerNames, layer.name]});
+        this.map.addLayer(layer);
     }
     
     onDropKml = async (layers: MarkerLayer[]) => {
         for(const layer of layers) {
-            this.setState({ layerNames: [... this.state.layerNames, layer.name]});
-            this.map.addLayer(layer);
+            this.addLayer(layer);
         }
     }
 
     onLayerAdd = () => {
 
         let layer: MarkerLayer = {
-            name: `Layer # ${++counter}`,
-            iconUrl: "resources/markers/circle.svg",
+            icon: { color: "blue", height: 30, width: 30, type: "circle"},
+            name: `Layer`,
             markers: [
                 { name: "Marker 1", description: "Marker 1", point: {lon: 30, lat: 10 }},
                 { name: "Marker 2", description: "Marker 2", point: {lon: 40, lat: 40 }},
@@ -59,8 +63,7 @@ export default class MapView extends React.PureComponent<{}, State> {
             ]
         };
 
-        this.setState({ layerNames: [... this.state.layerNames, layer.name]});
-        this.map.addLayer(layer);
+        this.addLayer(layer);
 
 
     }
@@ -120,3 +123,4 @@ const uiGridStyle: React.CSSProperties = {
     margin: "8px"
 
 }
+

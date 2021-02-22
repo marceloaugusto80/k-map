@@ -49,7 +49,7 @@ export default class KmlDropper extends React.Component<Props, State> {
                 this.setState({message: `Parsing file ${i+1}/${kmlFiles.length}...`});
                 let markers = await reader.parseFileAsync(curFile.path);
                 layers.push({
-                    iconUrl: "resources/markers/circle.svg",
+                    icon: { type: "place", width: 40, height: 40, color: "green" },
                     markers: markers,
                     name: path.basename(curFile.path)
                 });
