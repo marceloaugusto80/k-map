@@ -5,7 +5,7 @@ module.exports = {
 
     target: "electron-main",
 
-    mode: "production",
+    mode: "development",
 
     entry: { main: "./src/main-process.ts"},
 

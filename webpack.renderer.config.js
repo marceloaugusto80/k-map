@@ -12,8 +12,7 @@ module.exports = {
     devtool: "source-map",
 
     resolve: {
-        extensions: [".js", ".ts", ".jsx", ".tsx"],
-        alias: { "react-dom": "@hot-loader/react-dom" }
+        extensions: [".js", ".ts", ".jsx", ".tsx"]
     },
 
     entry: { renderer: "./src/renderer-process.tsx" }, 
@@ -37,13 +36,7 @@ module.exports = {
             patterns: [
                 { from: "src/resources", to: "resources" }
             ]
-        }),
-        new webpack.HotModuleReplacementPlugin()
-    ],
+        })
+    ]
 
-    devServer: {
-        contentBase: path.join(__dirname, "dist"),
-        compress: true,
-        port: 9000
-    }
 }
