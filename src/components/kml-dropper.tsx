@@ -1,7 +1,8 @@
 import * as React from "react";
 import { KmlReader } from "../core/kml-reader";
 import { Marker, MarkerLayer } from "../core/models";
-import path from "path";
+import "../core/file-extensions";
+
 
 interface Props {
     onDrop: (layer: MarkerLayer[]) => void;
@@ -28,7 +29,7 @@ export default class KmlDropper extends React.Component<Props, State> {
         
     }
     
-    createLayerFromFiless = async (fileList: FileList) => {
+    createLayerFromFiles = async (fileList: FileList) => {
         
         let files = Array.from(fileList);
         let kmlFiles = files.filter(f => f.name.endsWith(".kml"));
@@ -38,20 +39,20 @@ export default class KmlDropper extends React.Component<Props, State> {
             return;
         }
 
-        let layers = new Array<MarkerLayer>();
-
-        for(let i = 0; i < kmlFiles.length; i++)
+        const layers = new Array<MarkerLayer>();
+        let fileIdx = 1;
+        for(const file of kmlFiles)
         {
+            this.setState({message: `Parsing file ${fileIdx++}/${kmlFiles.length}...`});
             try {
-                const curFile = kmlFiles[i];
-                const reader = new KmlReader();
+               
+                const kmlReader = new KmlReader();
                 
-                this.setState({message: `Parsing file ${i+1}/${kmlFiles.length}...`});
-                let markers = await reader.parseFileAsync(curFile.path);
+                let markers = await kmlReader.parseFileAsync(file.path);
                 layers.push({
-                    icon: { type: "place", width: 40, height: 40, color: "green" },
+                    icon: { type: "circle", width: 40, height: 40, color: "red" },
                     markers: markers,
-                    name: path.basename(curFile.path)
+                    name: file.getFilenameWithoutExtension()
                 });
                 this.setState({message: ""});
                 
@@ -75,7 +76,7 @@ export default class KmlDropper extends React.Component<Props, State> {
 
     onFileChosen = async (ev: React.ChangeEvent<HTMLInputElement>) => {
         if(ev.currentTarget.files) {
-            await this.createLayerFromFiless(ev.currentTarget.files);
+            await this.createLayerFromFiles(ev.currentTarget.files);
         }
     }
 
@@ -90,7 +91,7 @@ export default class KmlDropper extends React.Component<Props, State> {
     onDrop = async (ev: React.DragEvent) => {
         ev.preventDefault();
 
-        await this.createLayerFromFiless(ev.dataTransfer.files);
+        await this.createLayerFromFiles(ev.dataTransfer.files);
         
     }
 
@@ -101,7 +102,12 @@ export default class KmlDropper extends React.Component<Props, State> {
     render() {
         return (
             <div 
-                style={this.state.isDragging ? dragStyle : passiveStyle} 
+                style={{
+                    display: "grid",
+                    gridTemplateRows: "auto 1fr auto",
+                    minWidth: "50%",
+                    minHeight: "50%"
+                }}
                 onDragEnter={this.onDragEnter} 
                 onDragExit={this.onDragExit}
                 onDragOver={this.onDragOver}
@@ -110,7 +116,12 @@ export default class KmlDropper extends React.Component<Props, State> {
                 <div>
                     <button onClick={this.onOpenFileClick}>Open...</button>
                 </div>
-                <input type="file" style={{display: "none"}} onChange={this.onFileChosen} ref={this.fileInputRef} />
+                <input 
+                type="file" 
+                accept=".kml"
+                style={{display: "none"}} 
+                onChange={this.onFileChosen} 
+                ref={this.fileInputRef} />
             </div>
         );
     }

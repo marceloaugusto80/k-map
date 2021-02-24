@@ -17,7 +17,7 @@ export interface MarkerLayer {
 
 
 
-type IconNames = "circle" | "place";
+export type IconNames = "circle" | "place";
 
 
 

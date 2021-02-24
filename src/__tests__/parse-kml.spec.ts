@@ -28,37 +28,33 @@ function createStream(content: string) : Readable {
 }
 
 
+test("should convert xml string to object array", async () => {
 
-describe("parseKml", () => {
-  
-  it("should convert xml string to object array", async () => {
+    const stream = createStream(kmlXml);
+    const expected: Marker[] = [
+        {
+            name: "some name",
+            description: "some description",
+            point: {
+                lat: 1.1,
+                lon: -1.1,
+            }
+        },
+        {
+            name: "some name",
+            description: "some description",
+            point: {
+                lat: 1.1,
+                lon: -1.1,
+            }
+        }
+    ];
+    const reader = new KmlReader();
 
-      const stream = createStream(kmlXml);
-      const expected: Marker[] = [
-          {
-              name: "some name",
-              description: "some description",
-              point: {
-                  lat: 1.1,
-                  lon: -1.1,
-              }
-          },
-          {
-              name: "some name",
-              description: "some description",
-              point: {
-                  lat: 1.1,
-                  lon: -1.1,
-              }
-          }
-      ];
-      const reader = new KmlReader();
+    const actual = await reader.parseAsync(stream);
 
-      const actual = await reader.parseAsync(stream);
-
-      expect(actual).toStrictEqual(expected);
-      
-  });
-
+    expect(actual).toStrictEqual(expected);
+    
 });
+
 

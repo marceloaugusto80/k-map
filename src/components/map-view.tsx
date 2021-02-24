@@ -1,13 +1,18 @@
 import React from "react";
 import MapEx from "../core/map-ex";
-import { MarkerLayer } from "../core/models";
+import { IconConfig, MarkerLayer } from "../core/models";
 import KmlDropper from "./kml-dropper";
 import LayerList from "./layer-list";
+import { Button, Dialog, DialogContent, DialogTitle} from "@material-ui/core";
 import "../core/string-extensions";
+import IconConfigurator from "./icon-configurator";
 
 
 interface State {
-    layerNames: string[]
+    layerNames: string[];
+    isImportWindowOpen: boolean;
+    isLayerConfigOpen: boolean;
+    layerConfigLocation: [number, number];
 }
 
 let counter = 0;
@@ -20,7 +25,10 @@ export default class MapView extends React.PureComponent<{}, State> {
         super(props);
 
         this.state = {
-            layerNames: []
+            layerNames: [],
+            isImportWindowOpen: false,
+            isLayerConfigOpen: false,
+            layerConfigLocation: [0, 0]
         };
 
         this.map = new MapEx();
@@ -37,35 +45,13 @@ export default class MapView extends React.PureComponent<{}, State> {
 
         console.log("Map rendered");
     }
-
-    addLayer = (layer: MarkerLayer) => {
-       
-        layer.name = layer.name.autoRename(this.state.layerNames);
-        this.setState({ layerNames: [... this.state.layerNames, layer.name]});
-        this.map.addLayer(layer);
-    }
     
     onDropKml = async (layers: MarkerLayer[]) => {
         for(const layer of layers) {
-            this.addLayer(layer);
+            layer.name = layer.name.autoRename(this.state.layerNames);
+            this.setState({ layerNames: [... this.state.layerNames, layer.name]});
+            this.map.addLayer(layer);
         }
-    }
-
-    onLayerAdd = () => {
-
-        let layer: MarkerLayer = {
-            icon: { color: "blue", height: 30, width: 30, type: "circle"},
-            name: `Layer`,
-            markers: [
-                { name: "Marker 1", description: "Marker 1", point: {lon: 30, lat: 10 }},
-                { name: "Marker 2", description: "Marker 2", point: {lon: 40, lat: 40 }},
-                { name: "Marker 3", description: "Marker 3", point: {lon: 20, lat: 30 }},
-            ]
-        };
-
-        this.addLayer(layer);
-
-
     }
 
     onLayerRemove = (layerName: string) => {
@@ -82,37 +68,58 @@ export default class MapView extends React.PureComponent<{}, State> {
         }
     }
 
+    onImportClick = () => {
+        this.setState({isImportWindowOpen: !this.state.isImportWindowOpen});
+    }
+
+    onLayerConfig = (layerName: string, x: number, y: number) => {
+        
+        this.setState({isLayerConfigOpen: !this.state.isLayerConfigOpen, layerConfigLocation: [x, y]});
+    }
+
+    onLayerConfigAccept = (config: IconConfig) => {
+        console.log(config);
+    }
+
     render() {
 
             return (
                 
                 <div>
 
-                    <div id="map" style={mapStyle} ref={this.onMapRender}></div>
-
-                    <div style={uiGridStyle} >
-                        <div>
-                            <LayerList 
-                                layerNames={this.state.layerNames} 
-                                onLayerRemove={this.onLayerRemove} 
-                                onAddNewLayer={this.onLayerAdd}/>
-                        </div>
-                        <div>
-                            <KmlDropper onDrop={this.onDropKml} />
-                        </div>
+                    <div id="map" ref={this.onMapRender} className="map"></div>
+                
+                    <div className="layer-list">
+                        <Button style={{display: "block"}} onClick={this.onImportClick} >Import</Button>
+                        <LayerList 
+                            layerNames={this.state.layerNames} 
+                            onLayerRemove={this.onLayerRemove}
+                            onLayerConfig={this.onLayerConfig}/>
                     </div>
 
+                    <Dialog 
+                    open={this.state.isImportWindowOpen} 
+                    onClose={()=>this.setState({isImportWindowOpen: false})}>
+                        <DialogTitle>Import file</DialogTitle>
+                        <DialogContent>
+                            <KmlDropper onDrop={this.onDropKml} />
+                        </DialogContent>
+                    </Dialog>
+                    { this.state.isLayerConfigOpen && 
+                        <div style={{
+                            position: "absolute",
+                            left: this.state.layerConfigLocation[0],
+                            top: this.state.layerConfigLocation[1],
+                        }}>
+                            <IconConfigurator onAccept={this.onLayerConfigAccept} /> 
+                        </div>
+                    }
                 </div>
             );
     }
 }
 
 
-const mapStyle: React.CSSProperties = {
-    position: "absolute",
-    width: "100%",
-    height: "100%"
-}
 
 const uiGridStyle: React.CSSProperties = {
     position: "absolute",

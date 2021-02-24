@@ -1,39 +1,38 @@
 import React from 'react'
+import { IconButton, Typography } from "@material-ui/core";
+import { DeleteForever, Palette } from '@material-ui/icons';
 
 interface Props {
     layerNames: string[];
     onLayerRemove: (layerName: string) => void;
-    onAddNewLayer: () => void;
+    onLayerConfig?: (layerName: string, x: number, y: number) => void;
 }
 
-export default function LayerList(props: Props) {
-    const {} = props
+export default class LayerList extends React.PureComponent<Props> {
+    
+    constructor(props: Props) {
+        super(props);
+    }
 
-    return (
-        <div style={wrapperStyle}>
-            
+    onIconStyleClick = (ev: React.MouseEvent<HTMLElement>) => {
+        if(this.props.onLayerConfig)
+            this.props.onLayerConfig("", ev.clientX, ev.clientY);
+    }
+
+    render() {
+        return (
             <div>
-                <a href="#"  onClick={props.onAddNewLayer}>Add...</a>
+                {
+                    this.props.layerNames.map((name, i) => 
+                    <div key={i}>
+                        <DeleteForever className="hand in-line" onClick={()=> this.props.onLayerRemove(name)} />
+                        <Typography className="in-line">{name}</Typography>
+                        <IconButton className="hand in-line" onClick={this.onIconStyleClick} />
+                    </div>)
+                }
             </div>
-            
-            {
-                props.layerNames.map((name, i) => <div key={i}>
-                    <button onClick={()=> props.onLayerRemove(name)}>X</button>
-                    <span >{name}</span>
-                </div>)
-            }
-            
-        </div>
-    );
-}
-
-
-const wrapperStyle: React.CSSProperties = {
-    padding: "8px",
-    backgroundColor: "#444444",
-    minWidth: "200px"
-}
-
-const itemStyle: React.CSSProperties = {
+        );
+    }
 
 }
+
