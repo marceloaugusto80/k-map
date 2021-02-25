@@ -1,10 +1,17 @@
 import KmlReader from "./kml-reader";
-import { MarkerLayer } from "./models";
+import { MarkerIconStyle, MarkerLayer } from "./models";
 import "./file-extensions";
 
 export namespace LayerFactory {
+    
+    const defaultMarkerIconStyle: MarkerIconStyle = {
+        color: "red",
+        height: 16,
+        width: 16,
+        type: "circle",
+    };
 
-    export async function createFormKmlFileAsync(kmlFile: File) {
+    export async function createFormKmlFileAsync(kmlFile: File, style?: MarkerIconStyle) {
 
         try {
             
@@ -14,7 +21,7 @@ export namespace LayerFactory {
             const markers = await kmlReader.parseFileAsync(kmlFile.path);
             
             const layer: MarkerLayer = {
-                icon: { type: "circle", width: 40, height: 40, color: "red" },
+                icon: style || defaultMarkerIconStyle,
                 markers: markers,
                 name: kmlFile.getFilenameWithoutExtension()
             };

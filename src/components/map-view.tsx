@@ -17,11 +17,17 @@ export default class MapView extends React.PureComponent<Props, any> {
     }
 
     onMapRender = (instance: HTMLDivElement | null) => {
-        if(!instance) {
-            console.error("map ref is not defined, dumbass!")
-            return;
-        }
+        if(!instance) throw new Error("Map ref is not defined.");
         this.map.render(instance);
+    }
+
+    componentDidUpdate = (prevProps: Props) => {
+        this.map.clearLayers();
+        if(this.props.layers) {
+            for(const layer of this.props.layers) {
+                this.map.tryAddLayer(layer);
+            }
+        }
     }
     
     render() {

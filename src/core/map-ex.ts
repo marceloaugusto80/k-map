@@ -3,7 +3,7 @@ import View from "ol/View";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import MapBrowserEvent from "ol/MapBrowserEvent";
-import { MarkerIconStyle, Marker, MarkerLayer } from "./models";
+import { MarkerLayer } from "./models";
 import { Feature } from "ol";
 import Point from "ol/geom/Point";
 import Style from "ol/style/Style";
@@ -16,15 +16,18 @@ import { fromLonLat } from "ol/proj";
 import Icon from "ol/style/Icon"
 import * as OlControl from "ol/control"
 import { IconFactory } from "./icon-factory";
+import "./array-extensions";
 
 
 
 export default class MapEx {
-
+    private layerNames: string[];
     private map: OlMap;
     private view: View;
 
     constructor() {
+        this.layerNames = [];
+
         let mapLayers = [
             new TileLayer({
                 source: new OSM()
@@ -48,8 +51,14 @@ export default class MapEx {
         this.map.on("click", this.onMapClick)
     }
     
-    addLayer(layer: MarkerLayer) {
+    /**
+     * Add a layer to the map, if there's no name collision.
+     * @param layer layer to add, if there's no name collision.
+     */
+    tryAddLayer(layer: MarkerLayer) {
         
+        if(this.layerNames.indexOf(layer.name) != -1) return; 
+
         const olIcon = new Icon({
             src: IconFactory.createSvgUrlData(layer.icon)
         });
@@ -65,7 +74,19 @@ export default class MapEx {
         });
 
         this.map.addLayer(olLayer);
+        this.layerNames.push(layer.name);
 
+    }
+
+    clearLayers() {
+        for(const layerName of this.layerNames) {
+            this.removeLayer(layerName);
+        }
+        this.layerNames = [];
+    }
+
+    hasLayer(layeName: string) {
+        return this.layerNames.indexOf(layeName) != -1;
     }
 
     removeLayer(layerName: string) {
@@ -74,6 +95,7 @@ export default class MapEx {
             throw new Error(`Could not find layer named '${layerName}'`);
         }
         this.map.removeLayer(targetOlLayer);
+        this.layerNames.remove(layerName);
     }
 
     exportImage() {

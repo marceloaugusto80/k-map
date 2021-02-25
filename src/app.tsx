@@ -3,12 +3,21 @@ import * as React from "react";
 import FileOpenDialog from "./components/file-opener-dialog";
 import LayerList from "./components/layer-list";
 import MapView from "./components/map-view";
+import { LayerFactory } from "./core/layer-factory";
 import { MarkerIconStyle, MarkerLayer } from "./core/models";
+import "./core/string-extensions";
 
 interface AppState {
     markerLayers: MarkerLayer[];
     isImportWindowOpen: boolean;
 }
+
+const defaultMarkerIconStyle: MarkerIconStyle = {
+    color: "red",
+    height: 16,
+    width: 16,
+    type: "circle",
+};
 
 
 export default class App extends React.PureComponent<{}, AppState> {
@@ -31,12 +40,30 @@ export default class App extends React.PureComponent<{}, AppState> {
         console.error("not implemented");
     }
     
-    onAddLayers = (layers: MarkerLayer[]) => {
-        const foo = [1, 3];
-        const bar = [3, 4];
-        const foobar = [...foo, bar];
+    onOpenFiles = async (fileList: FileList) => {
+        this.setState({isImportWindowOpen: false});
+        const files = Array.from(fileList);
+       
+        const newLayers = new Array<MarkerLayer>();
+        const layerNames = this.state.markerLayers.map(l => l.name);
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            try {
+                const layer = await LayerFactory.createFormKmlFileAsync(file);
+                layer.name = layer.name.autoRename(layerNames);
+                layerNames.push(layer.name);
+                newLayers.push(layer);
+            }
+            catch(err) {
+                // TODO handle exception
+                console.error(err);
+            }
+            
+        }
+
         this.setState((prev) => {
-            return { markerLayers: [...prev.markerLayers, ...layers]};
+            return { markerLayers: [...prev.markerLayers, ...newLayers]};
         });
     }
     
@@ -65,7 +92,7 @@ export default class App extends React.PureComponent<{}, AppState> {
                     onClose={()=>this.setState({isImportWindowOpen: false})}>
                     <DialogTitle>Import file</DialogTitle>
                     <DialogContent>
-                        <FileOpenDialog onAddLayers={this.onAddLayers} />
+                        <FileOpenDialog onOpenFiles={this.onOpenFiles} />
                     </DialogContent>
                 </Dialog>
             

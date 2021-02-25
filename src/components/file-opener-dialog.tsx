@@ -4,7 +4,7 @@ import { MarkerLayer } from "../core/models";
 
 
 interface Props {
-    onAddLayers?: (layers: MarkerLayer[]) => void;
+    onOpenFiles?: (fileList: FileList) => void;
 }
 
 interface State {
@@ -28,33 +28,16 @@ export default class FileOpenDialog extends React.Component<Props, State> {
         
     }
     
-    addLayers = async (fileList: FileList) => {
-        if(!this.props.onAddLayers) return;
-        const files = Array.from(fileList);
-        let counter = 0;
-        const result = new Array<MarkerLayer>(files.length);
-        for(const file of files) {
-            try {
-                const layer = await LayerFactory.createFormKmlFileAsync(file);
-                result[counter] = layer;
-                counter++
-            }
-            catch(err) {
-                // TODO handle exception
-            }
-        }
-        this.props.onAddLayers(result.filter(l => !!l));
-    }
-
     onOpenFileClick = () => {
         if(this.fileInputRef) {
             this.fileInputRef.current?.click()
         }
     }
 
-    onFilesSelected = async (ev: React.ChangeEvent<HTMLInputElement>) => {
+    onFilesSelected = (ev: React.ChangeEvent<HTMLInputElement>) => {
         const { files } = ev.currentTarget;
-        if(files) await this.addLayers(files);
+        const { onOpenFiles } = this.props;
+        if(files && onOpenFiles) onOpenFiles(files);
     }
 
     onDragEnter = () => {
@@ -68,7 +51,8 @@ export default class FileOpenDialog extends React.Component<Props, State> {
     onDrop = async (ev: React.DragEvent) => {
         ev.preventDefault();
         const { files } = ev.dataTransfer;
-        if(files) await this.addLayers(files);
+        const { onOpenFiles } = this.props;
+        if(onOpenFiles) onOpenFiles(files);
     }
 
     onDragOver = (ev: React.DragEvent) => {
