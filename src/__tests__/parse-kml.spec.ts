@@ -1,4 +1,4 @@
-import { KmlReader } from "../core/kml-reader";
+import KmlReader from "../core/kml-reader";
 import { Marker } from "../core/models";
 import { Readable } from "stream";
 

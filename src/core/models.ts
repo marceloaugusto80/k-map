@@ -11,7 +11,7 @@ export interface Marker {
 
 export interface MarkerLayer {
     name: string;
-    icon: IconConfig;
+    icon: MarkerIconStyle;
     markers: Marker[];
 }
 
@@ -21,7 +21,7 @@ export type IconNames = "circle" | "place";
 
 
 
-export interface IconConfig {
+export interface MarkerIconStyle {
     type: IconNames,
     width: number;
     height: number;
@@ -30,7 +30,7 @@ export interface IconConfig {
 
 
 
-const defaultIconConfig: IconConfig = {
+const defaultIconConfig: MarkerIconStyle = {
     type: "circle",
     width: 22,
     height: 22,

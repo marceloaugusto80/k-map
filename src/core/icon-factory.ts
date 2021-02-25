@@ -1,10 +1,10 @@
-import { IconConfig } from "./models";
+import { MarkerIconStyle } from "./models";
 
 export namespace IconFactory {
 
 
     
-export function createSvgUrlData(iconConfig: IconConfig) {
+export function createSvgUrlData(iconConfig: MarkerIconStyle) {
 
     let rawSvg = "";
 

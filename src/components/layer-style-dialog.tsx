@@ -1,5 +1,5 @@
 import * as React from "react";
-import { IconConfig, IconNames } from "../core/models";
+import { MarkerIconStyle, IconNames } from "../core/models";
 import { FormControl, Input, InputLabel, Select, TextField, MenuItem, Button } from "@material-ui/core";
 import ColorPicker from "./color-picker";
 import { SelectInputProps } from "@material-ui/core/Select/SelectInput";
@@ -9,8 +9,8 @@ import { IconFactory } from "../core/icon-factory";
 const iconSizes = [8, 16, 32, 48, 64];
 
 interface Props {
-    onAccept: (iconConfig: IconConfig) => void;
-    defaultConfig?: IconConfig;
+    onApply?: (iconConfig: MarkerIconStyle) => void;
+    defaultConfig?: MarkerIconStyle;
 }
 
 interface State {
@@ -21,7 +21,7 @@ interface State {
 }
 
 
-export default class IconConfigurator extends React.PureComponent<Props, State> {
+export default class LayerStyleDialog extends React.PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -62,7 +62,8 @@ export default class IconConfigurator extends React.PureComponent<Props, State> 
     }
 
     onAccept = () => {
-        this.props.onAccept({
+        if(!this.props.onApply) return;
+        this.props.onApply({
             color: this.state.color,
             height: this.state.h,
             width: this.state.w,

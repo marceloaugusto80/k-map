@@ -1,11 +1,10 @@
 import * as React from "react";
-import { KmlReader } from "../core/kml-reader";
-import { Marker, MarkerLayer } from "../core/models";
-import "../core/file-extensions";
+import { LayerFactory } from "../core/layer-factory";
+import { MarkerLayer } from "../core/models";
 
 
 interface Props {
-    onDrop: (layer: MarkerLayer[]) => void;
+    onAddLayers?: (layers: MarkerLayer[]) => void;
 }
 
 interface State {
@@ -13,7 +12,7 @@ interface State {
     message: string;
 }
 
-export default class KmlDropper extends React.Component<Props, State> {
+export default class FileOpenDialog extends React.Component<Props, State> {
     
     private fileInputRef: React.RefObject<HTMLInputElement>;
     
@@ -29,43 +28,22 @@ export default class KmlDropper extends React.Component<Props, State> {
         
     }
     
-    createLayerFromFiles = async (fileList: FileList) => {
-        
-        let files = Array.from(fileList);
-        let kmlFiles = files.filter(f => f.name.endsWith(".kml"));
-        
-        if(kmlFiles.length < 1){
-            this.setState({message: "Error: No kml files detected"});
-            return;
-        }
-
-        const layers = new Array<MarkerLayer>();
-        let fileIdx = 1;
-        for(const file of kmlFiles)
-        {
-            this.setState({message: `Parsing file ${fileIdx++}/${kmlFiles.length}...`});
+    addLayers = async (fileList: FileList) => {
+        if(!this.props.onAddLayers) return;
+        const files = Array.from(fileList);
+        let counter = 0;
+        const result = new Array<MarkerLayer>(files.length);
+        for(const file of files) {
             try {
-               
-                const kmlReader = new KmlReader();
-                
-                let markers = await kmlReader.parseFileAsync(file.path);
-                layers.push({
-                    icon: { type: "circle", width: 40, height: 40, color: "red" },
-                    markers: markers,
-                    name: file.getFilenameWithoutExtension()
-                });
-                this.setState({message: ""});
-                
-            } catch (error) {
-                
-                this.setState({message: `Error: ${error?.message}...`});
-                
+                const layer = await LayerFactory.createFormKmlFileAsync(file);
+                result[counter] = layer;
+                counter++
             }
-            
+            catch(err) {
+                // TODO handle exception
+            }
         }
-        
-        this.props.onDrop(layers);
-
+        this.props.onAddLayers(result.filter(l => !!l));
     }
 
     onOpenFileClick = () => {
@@ -74,10 +52,9 @@ export default class KmlDropper extends React.Component<Props, State> {
         }
     }
 
-    onFileChosen = async (ev: React.ChangeEvent<HTMLInputElement>) => {
-        if(ev.currentTarget.files) {
-            await this.createLayerFromFiles(ev.currentTarget.files);
-        }
+    onFilesSelected = async (ev: React.ChangeEvent<HTMLInputElement>) => {
+        const { files } = ev.currentTarget;
+        if(files) await this.addLayers(files);
     }
 
     onDragEnter = () => {
@@ -90,9 +67,8 @@ export default class KmlDropper extends React.Component<Props, State> {
 
     onDrop = async (ev: React.DragEvent) => {
         ev.preventDefault();
-
-        await this.createLayerFromFiles(ev.dataTransfer.files);
-        
+        const { files } = ev.dataTransfer;
+        if(files) await this.addLayers(files);
     }
 
     onDragOver = (ev: React.DragEvent) => {
@@ -112,16 +88,22 @@ export default class KmlDropper extends React.Component<Props, State> {
                 onDragExit={this.onDragExit}
                 onDragOver={this.onDragOver}
                 onDrop={this.onDrop} >
+                
+                <div>
                     {this.state.message}
+                </div>
+
                 <div>
                     <button onClick={this.onOpenFileClick}>Open...</button>
                 </div>
+                
                 <input 
                 type="file" 
                 accept=".kml"
                 style={{display: "none"}} 
-                onChange={this.onFileChosen} 
+                onChange={this.onFilesSelected} 
                 ref={this.fileInputRef} />
+            
             </div>
         );
     }

@@ -3,7 +3,7 @@ import { Readable } from "stream";
 import fs from "fs";
 import { Marker } from "./models";
 
-export class KmlReader {
+export default class KmlReader {
 
     private tagStack = new Array<string>();
     private currMarker: Marker | undefined;

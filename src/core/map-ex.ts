@@ -3,7 +3,7 @@ import View from "ol/View";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import MapBrowserEvent from "ol/MapBrowserEvent";
-import { IconConfig, Marker, MarkerLayer } from "./models";
+import { MarkerIconStyle, Marker, MarkerLayer } from "./models";
 import { Feature } from "ol";
 import Point from "ol/geom/Point";
 import Style from "ol/style/Style";
