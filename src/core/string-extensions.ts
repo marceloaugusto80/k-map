@@ -1,3 +1,5 @@
+import { rename } from "fs";
+
 export {};
 
 declare global {
@@ -6,32 +8,35 @@ declare global {
     }
 }
 
+const renamedStringPattern = /^(.+?)_(\d+)$/;
+
 /**
  * Returns a name name for this string if theres a match in the provided array.
  */
 String.prototype.autoRename = function(possibleMatches: string[]): string {
-    
-    if(!possibleMatches || possibleMatches.length == 0) return this.toString();
-    
-    let regexExpression = `^(${this})(\\d*)$`;
+    const original = this.toString();    
 
-    const matches = possibleMatches
-        .map(item => item.match(regexExpression))
-        .filter(match => match != null)
-        .sort((m1, m2) => {
-            if(!m1 || !m2) return 0;
-            if(m1[2] > m2[2]) return 1;
-            else return -1;
-        });
+    if(!possibleMatches || possibleMatches.length == 0) return original;
+
+    let matchCount = 0;
+    let renamed = original;
+
+    while(true) {
         
-        if(matches.length == 0) return this.toString();
+        const matchIdx = possibleMatches.findIndex(m => m == renamed);
+        if(matchIdx < 0) break;
+
+        const matchMatch = renamedStringPattern.exec(possibleMatches[matchIdx]);
+        if(matchMatch) {
+            const numberSufix = matchMatch[2];
+            matchCount = parseInt(numberSufix);
+            const renameMatch = renamedStringPattern.exec(renamed);
+            renamed = renameMatch ? renameMatch[1] : renamed;
+        }
+
+        renamed = `${renamed}_${++matchCount}`;
         
-        const lastMatch = matches[matches.length -1];
-        if(!lastMatch) return this.toString();
+    }
 
-        let lastItemNumericSufix = parseInt(lastMatch[2]);
-        return isNaN(lastItemNumericSufix) ? 
-            `${lastMatch[1]}1`:
-            `${lastMatch[1]}${lastItemNumericSufix + 1}`;
-
+    return renamed;
 }

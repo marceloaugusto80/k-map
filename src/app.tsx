@@ -45,14 +45,14 @@ export default class App extends React.PureComponent<{}, AppState> {
         const files = Array.from(fileList);
        
         const newLayers = new Array<MarkerLayer>();
-        const layerNames = this.state.markerLayers.map(l => l.name);
+        const alreadyUsedLayerNames = this.state.markerLayers.map(l => l.name);
 
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             try {
                 const layer = await LayerFactory.createFormKmlFileAsync(file);
-                layer.name = layer.name.autoRename(layerNames);
-                layerNames.push(layer.name);
+                layer.name = layer.name.autoRename(alreadyUsedLayerNames);
+                alreadyUsedLayerNames.push(layer.name);
                 newLayers.push(layer);
             }
             catch(err) {
