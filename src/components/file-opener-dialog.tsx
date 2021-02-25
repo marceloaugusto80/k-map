@@ -61,34 +61,33 @@ export default class FileOpenDialog extends React.Component<Props, State> {
 
     render() {
         return (
-            <div 
-                style={{
-                    display: "grid",
-                    gridTemplateRows: "auto 1fr auto",
-                    minWidth: "50%",
-                    minHeight: "50%"
-                }}
-                onDragEnter={this.onDragEnter} 
-                onDragExit={this.onDragExit}
-                onDragOver={this.onDragOver}
-                onDrop={this.onDrop} >
+            <React.Fragment>
                 
-                <div>
-                    {this.state.message}
+                <p>
+                    <span> Open file: </span>
+                    <button className="in-line" onClick={this.onOpenFileClick}>Open...</button> 
+                </p>
+                
+                <p>or drag files below:</p>
+                
+                <div className="drop-file"
+                    onDragEnter={this.onDragEnter} 
+                    onDragExit={this.onDragExit}
+                    onDragOver={this.onDragOver}
+                    onDrop={this.onDrop}>
+                    drop files here
                 </div>
-
-                <div>
-                    <button onClick={this.onOpenFileClick}>Open...</button>
-                </div>
+                
+                <p>{this.state.message}</p>
                 
                 <input 
-                type="file" 
-                accept=".kml"
-                style={{display: "none"}} 
-                onChange={this.onFilesSelected} 
-                ref={this.fileInputRef} />
+                    type="file" 
+                    accept=".kml"
+                    style={{display: "none"}} 
+                    onChange={this.onFilesSelected} 
+                    ref={this.fileInputRef} />
             
-            </div>
+            </React.Fragment>
         );
     }
 }

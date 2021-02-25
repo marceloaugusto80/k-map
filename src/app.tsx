@@ -73,19 +73,15 @@ export default class App extends React.PureComponent<{}, AppState> {
 
     render() {
         return (
-            <div>
-                
-                <div style={{position: "absolute", width: "100%", height: "100%" }}>
-                    <MapView layers={this.state.markerLayers}/>
-                </div>
-                
-                <div style={{ position: "absolute", top: 12, left: 12, width: 100, height: 100 }}>
-                    <LayerList 
-                        onAddLayer={this.toggleOpenFileDialog}
-                        onLayerRemove={this.onLayerRemove} 
-                        onApplyLayerStyle={this.onApplyLayerStyle}
-                        layerNames={this.state.markerLayers.map(l => l.name)} />
-                </div>
+            <React.Fragment>
+
+                <MapView layers={this.state.markerLayers}/>
+            
+                <LayerList 
+                    onAddLayer={this.toggleOpenFileDialog}
+                    onLayerRemove={this.onLayerRemove} 
+                    onApplyLayerStyle={this.onApplyLayerStyle}
+                    layerNames={this.state.markerLayers.map(l => l.name)} />
 
                 <Dialog 
                     open={this.state.isImportWindowOpen} 
@@ -96,7 +92,7 @@ export default class App extends React.PureComponent<{}, AppState> {
                     </DialogContent>
                 </Dialog>
             
-            </div>
+            </React.Fragment>
 
         )
     }

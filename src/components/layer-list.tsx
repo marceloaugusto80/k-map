@@ -1,5 +1,5 @@
 import React from 'react'
-import { IconButton, Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import { DeleteForever, Palette } from '@material-ui/icons';
 import LayerStyleDialog from './layer-style-dialog';
 import { MarkerIconStyle } from '../core/models';
@@ -58,10 +58,8 @@ export default class LayerList extends React.PureComponent<Props, State> {
 
     render() {
         return (
-            <div>
-                <div>
-                    <button onClick={this.props.onAddLayer}>Import</button>
-                </div>
+            <div className="layer-list float-container lv1">
+                <button onClick={this.props.onAddLayer} className="block">Add layer...</button>
                 <hr/>
                 {
                     this.props.layerNames.map((name, i) => 
@@ -71,14 +69,20 @@ export default class LayerList extends React.PureComponent<Props, State> {
                         onClick={()=> this.onLayerRemove(name)} />
                         <Typography 
                         className="in-line v-center">{name}</Typography>
-                        <IconButton 
+                        <Palette 
                         className="hand in-line v-center" 
                         onClick={(ev)=>this.onIconStyleClick(name, ev.clientX, ev.clientY)} />
                     </div>)
                 }
                 {
                     this.state.isIconStyleWindowOpen &&
-                    <div style={{position: "absolute"}}>
+                    <div 
+                        className="float-container lv2"
+                        style={{
+                            position: "absolute", 
+                            left: this.state.styleWindowPosition[0],
+                            top: this.state.styleWindowPosition[1], 
+                        }}>
                         <LayerStyleDialog onApply={this.onApplyIconStyle}/>
                     </div>
                 }
