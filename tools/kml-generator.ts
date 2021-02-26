@@ -55,11 +55,11 @@ function getRandomLatLon() {
 function createPlacemarkTag(name: string, description: string, lat: number, lon: number): string {
     return `
     <placemark>
-    <name>${name}</name>
-    <description>${description}</description>
-    <point>
-    <coordinates>${lat},${lon},0</coordinates>
-    </point>
+        <name>${name}</name>
+        <description>${description}</description>
+        <point>
+            <coordinates>${lat},${lon},0</coordinates>
+        </point>
     </placemark>`;
 }
 
