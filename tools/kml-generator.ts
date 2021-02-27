@@ -41,6 +41,13 @@ async function deleteFileIfExistsAsync(filePath: string): Promise<boolean> {
     
 }
 
+async function createDirectoryIfNotExists(directoryPath: string) {
+    return new Promise<void>((res, rej) => {
+        fs.mkdir(directoryPath, err => rej(err));
+        res();
+    });
+}
+
 function getRandom(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
@@ -67,17 +74,22 @@ function createPlacemarkTag(name: string, description: string, lat: number, lon:
 async function generateRandonKmlFileAsync(placemarksCount: number, fileName: string) {
     
     console.log(`Starting generating kml file...`);
+    
     let filePath = "";
+    let dirPath = "";
+
     try {
 
-        
-        filePath = path.resolve(await getAppRootDirAsync(), "temp", fileName);
+        dirPath = path.resolve(await getAppRootDirAsync(), "temp");
+        await createDirectoryIfNotExists(dirPath);
+        filePath = path.resolve(dirPath, fileName);
         console.log(`-> generating file ${filePath}`);
         if(await deleteFileIfExistsAsync(filePath)) {
             console.log("-> removing previous file with the same name")
         }
         
         const readable = new Readable({ encoding: "utf-8" });
+        readable.on("error", err => console.error(err));
         const fileStream = fs.createWriteStream(filePath);
         readable.pipe(fileStream);
         
