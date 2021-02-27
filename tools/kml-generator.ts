@@ -1,5 +1,6 @@
-import fs from "fs";
+import fs, { read } from "fs";
 import path from "path";
+import { Readable } from "stream";
 
 function getAppRootDirAsync() {
     return new Promise<string>((res, rej) => {
@@ -69,17 +70,23 @@ async function generateRandonKmlFileAsync(placemarksCount: number, fileName: str
     let filePath = "";
     try {
 
-        const header = `<?xml version="1.0" encoding="UTF-8"?>`;
-        const kmlOpenRoot = `<kml xmlns="http://www.opengis.net/kml/2.2">`;
-        const kmlCloseRoot = `</kml>`;
         
         filePath = path.resolve(await getAppRootDirAsync(), "temp", fileName);
         console.log(`-> generating file ${filePath}`);
         if(await deleteFileIfExistsAsync(filePath)) {
             console.log("-> removing previous file with the same name")
         }
-        await fs.promises.appendFile(filePath, [header, kmlOpenRoot].join("\n"), {flag: "a"});
         
+        const readable = new Readable({ encoding: "utf-8" });
+        const fileStream = fs.createWriteStream(filePath);
+        readable.pipe(fileStream);
+        
+        const header = `<?xml version="1.0" encoding="UTF-8"?>`;
+        const kmlOpenRoot = `\n<kml xmlns="http://www.opengis.net/kml/2.2">`;
+        const kmlCloseRoot = `\n</kml>`;
+        readable.push(header);
+        readable.push(kmlOpenRoot);
+
         let counter = 0;
         while(counter++ < placemarksCount) {
             process.stdout.write(`-> creating placemark ${counter}/${placemarksCount}\r`);
@@ -89,10 +96,13 @@ async function generateRandonKmlFileAsync(placemarksCount: number, fileName: str
             const name = `Name #${counter}`;
             const placemark = createPlacemarkTag(name, description, latLon[0], latLon[1]);
 
-            await fs.promises.appendFile(filePath, placemark)
+            readable.push(placemark);
+            
         }
         
-        await fs.promises.appendFile(filePath, kmlCloseRoot);
+        readable.push(kmlCloseRoot);
+        readable.push(null);
+        
         console.log("\nDone!");
     }
     catch(err) {
@@ -101,7 +111,8 @@ async function generateRandonKmlFileAsync(placemarksCount: number, fileName: str
     }
         
 }
-    
+
+
     
 (async function(){
 
