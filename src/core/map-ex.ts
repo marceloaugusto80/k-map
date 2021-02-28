@@ -17,6 +17,7 @@ import Icon from "ol/style/Icon"
 import * as OlControl from "ol/control"
 import { IconFactory } from "./icon-factory";
 import _ from "lodash";
+import "ol-ext";
 
 
 
@@ -99,6 +100,7 @@ export default class MapEx {
     }
 
     exportImage() {
+        this.map.addControl
         // use ol-ext
     }
 

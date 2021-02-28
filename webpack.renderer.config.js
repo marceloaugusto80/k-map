@@ -10,7 +10,7 @@ module.exports = {
 
     target: "electron-renderer",
 
-    devtool: "eval",
+    devtool: "source-map",
 
     resolve: {
         extensions: [".js", ".ts", ".jsx", ".tsx"]

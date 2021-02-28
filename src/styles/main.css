@@ -59,4 +59,20 @@ body {
     background-color: #dbdbdb;
 }
 
+.dialog-wrapper {
+    position: fixed;
+    background-color: #00000049;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
 
+.dialog {
+    position: absolute;
+    background-color: white;
+    min-width: 100px;
+    min-height: 100px;
+}

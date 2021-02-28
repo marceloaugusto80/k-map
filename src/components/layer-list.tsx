@@ -3,6 +3,7 @@ import { Typography } from "@material-ui/core";
 import { DeleteForever, Palette } from '@material-ui/icons';
 import LayerStyleDialog from './layer-style-dialog';
 import { MarkerIconStyle } from '../core/models';
+import Modal from './modal';
 
 interface Props {
     layerNames: string[];
@@ -75,18 +76,12 @@ export default class LayerList extends React.PureComponent<Props, State> {
                         onClick={(ev)=>this.onIconStyleClick(name, ev.clientX, ev.clientY)} />
                     </div>)
                 }
-                {
-                    this.state.isIconStyleWindowOpen &&
-                    <div 
-                        className="float-container lv2"
-                        style={{
-                            position: "absolute", 
-                            left: this.state.styleWindowPosition[0],
-                            top: this.state.styleWindowPosition[1], 
-                        }}>
+                    <Modal 
+                    isOpen={this.state.isIconStyleWindowOpen} 
+                    onClose={() => this.setState({isIconStyleWindowOpen: false})} 
+                    position={this.state.styleWindowPosition}>
                         <LayerStyleDialog onApply={this.onApplyIconStyle}/>
-                    </div>
-                }
+                    </Modal>
             </div>
         );
     }

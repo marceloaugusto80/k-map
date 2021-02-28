@@ -7,6 +7,7 @@ import { LayerFactory } from "./core/layer-factory";
 import { MarkerIconStyle, MarkerLayer } from "./core/models";
 import "./core/string-extensions";
 import _ from "lodash";
+import {positions} from "@material-ui/system";
 
 interface AppState {
     markerLayers: MarkerLayer[];
