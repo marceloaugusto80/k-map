@@ -9,10 +9,9 @@ function createWindow() {
         }
     });
 
-    win.loadFile("../renderer/index.html");
+    win.loadFile("./renderer/index.html");
 }
 
-app.whenReady().then(createWindow);
 
 app.on("window-all-closed", ()=> {
     if(process.platform !== "darwin") {
@@ -25,3 +24,5 @@ app.on("activate", () => {
         createWindow();
     }
 })
+
+app.whenReady().then(createWindow);

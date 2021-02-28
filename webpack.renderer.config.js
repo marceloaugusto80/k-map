@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const { CleanPlugin } = require("webpack");
 
 module.exports = {
 
@@ -9,7 +10,7 @@ module.exports = {
 
     target: "electron-renderer",
 
-    devtool: "source-map",
+    devtool: "eval",
 
     resolve: {
         extensions: [".js", ".ts", ".jsx", ".tsx"]
@@ -30,7 +31,7 @@ module.exports = {
     },
 
     plugins: [
-        new webpack.CleanPlugin(),
+        new CleanPlugin(),
         new HtmlWebpackPlugin({filename: "index.html", template: "./src/index.html"}),
         new CopyWebpackPlugin({
             patterns: [

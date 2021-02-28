@@ -4,7 +4,7 @@
   "description": "Plot placemarks from kml files in a map.",
   "author": "Marcelo Augusto R. A.",
   "license": "MIT",
-  "main": "dist/main/main.js",
+  "main": "main.js",
   "scripts": {
     "test": "npx jest --config jest.config.js --no-cache",
     "build-renderer": "npx webpack -c webpack.renderer.config.js",
@@ -12,7 +12,8 @@
     "build": "npm run build-main && npm run build-renderer",
     "start-electron": "npx electron ./dist/main/main.js",
     "watch-renderer": "npx webpack -c webpack.renderer.config.js --watch",
-    "start": "npm run build && npx concurrently --kill-others \"npm:watch-renderer\" \"npm:start-electron\""
+    "start": "npm run build && npx concurrently --kill-others \"npm:watch-renderer\" \"npm:start-electron\"",
+    "pack": "npm install && npm run build && npx electron-packager ./dist --out ./out --overwrite"
   },
   "devDependencies": {
     "@hot-loader/react-dom": "^17.0.1",
@@ -25,7 +26,7 @@
     "concurrently": "^6.0.0",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.2",
-    "electron": "^11.3.0",
+    "electron-packager": "^15.2.0",
     "html-webpack-plugin": "^5.2.0",
     "jest": "^26.6.3",
     "jest-cli": "^26.6.3",
@@ -42,6 +43,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.2",
     "@material-ui/icons": "^4.11.2",
+    "electron": "^11.3.0",
     "lodash": "^4.17.21",
     "ol": "^6.5.0",
     "react": "^17.0.1",

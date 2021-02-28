@@ -1,5 +1,7 @@
+const copyWebpackPlugin = require("copy-webpack-plugin");
 const path = require("path");
 const { CleanPlugin } = require("webpack");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
 
@@ -10,7 +12,7 @@ module.exports = {
     entry: { main: "./src/main-process.ts"},
 
     output: {
-        path: path.resolve(__dirname, "dist", "main"),
+        path: path.resolve(__dirname, "dist"),
         filename: "[name].js"
     },
 
@@ -21,6 +23,10 @@ module.exports = {
     },
 
     plugins: [
-        new CleanPlugin()
+        new copyWebpackPlugin({
+            patterns: [
+                { from: "package.json"}
+            ]
+        })
     ]
 }
