@@ -40,8 +40,8 @@ export default class App extends React.PureComponent<{}, AppState> {
     onLayerRemove = (layerName: string) => {
        this.setState(prevState => {
            const updatedMarkers = _.remove(prevState.markerLayers, i => i.name != layerName);
-           return { markerLayers: updatedMarkers};
-       })
+           return { markerLayers: updatedMarkers };
+       });
     }
     
     onOpenFiles = async (fileList: FileList) => {
@@ -72,7 +72,15 @@ export default class App extends React.PureComponent<{}, AppState> {
     }
     
     onApplyLayerStyle = (layerName: string, style: MarkerIconStyle) => {
-        
+        this.setState(prevState => {
+            const { markerLayers } = prevState;
+            const targetIdx = _.findIndex(markerLayers, l => l.name == layerName);
+            if(targetIdx < 0) return null;
+            let targetLayer = markerLayers[targetIdx];
+            targetLayer.icon = style;
+            const updatedLayers = markerLayers.splice(targetIdx, 1, targetLayer);            
+            return { markerLayers: updatedLayers };
+        });
     }
 
     render() {

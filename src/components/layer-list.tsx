@@ -48,6 +48,7 @@ export default class LayerList extends React.PureComponent<Props, State> {
 
     onApplyIconStyle = (iconConfig: MarkerIconStyle) => {
         if(!this.state.currentLayerName || !this.props.onApplyLayerStyle) return;
+        this.setState({isIconStyleWindowOpen: false});
         this.props.onApplyLayerStyle(this.state.currentLayerName, iconConfig);
     }
 
