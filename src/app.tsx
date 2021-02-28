@@ -6,6 +6,7 @@ import MapView from "./components/map-view";
 import { LayerFactory } from "./core/layer-factory";
 import { MarkerIconStyle, MarkerLayer } from "./core/models";
 import "./core/string-extensions";
+import _ from "lodash";
 
 interface AppState {
     markerLayers: MarkerLayer[];
@@ -37,7 +38,10 @@ export default class App extends React.PureComponent<{}, AppState> {
     }
 
     onLayerRemove = (layerName: string) => {
-        console.error("not implemented");
+       this.setState(prevState => {
+           const updatedMarkers = _.remove(prevState.markerLayers, i => i.name != layerName);
+           return { markerLayers: updatedMarkers};
+       })
     }
     
     onOpenFiles = async (fileList: FileList) => {
@@ -68,7 +72,7 @@ export default class App extends React.PureComponent<{}, AppState> {
     }
     
     onApplyLayerStyle = (layerName: string, style: MarkerIconStyle) => {
-        console.error("not implemented");
+        
     }
 
     render() {

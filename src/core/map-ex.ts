@@ -16,7 +16,7 @@ import { fromLonLat } from "ol/proj";
 import Icon from "ol/style/Icon"
 import * as OlControl from "ol/control"
 import { IconFactory } from "./icon-factory";
-import "./array-extensions";
+import _ from "lodash";
 
 
 
@@ -95,7 +95,7 @@ export default class MapEx {
             throw new Error(`Could not find layer named '${layerName}'`);
         }
         this.map.removeLayer(targetOlLayer);
-        this.layerNames.remove(layerName);
+        this.layerNames = _.remove(this.layerNames, layerName);
     }
 
     exportImage() {
