@@ -1,4 +1,3 @@
-import { Dialog, DialogContent, DialogTitle } from "@material-ui/core";
 import * as React from "react";
 import FileOpenDialog from "./components/file-opener-dialog";
 import LayerList from "./components/layer-list";
@@ -7,28 +6,29 @@ import { LayerFactory } from "./core/layer-factory";
 import { MarkerIconStyle, MarkerLayer } from "./core/models";
 import "./core/string-extensions";
 import _ from "lodash";
-import {positions} from "@material-ui/system";
+import ImageCrop from "./components/image-crop";
+import Modal from "./components/modal";
+import { ImageManager } from "./core/image-manager";
 
 interface AppState {
     markerLayers: MarkerLayer[];
     isImportWindowOpen: boolean;
+    mapScreenShot?: string;
+    crop?: ReactCrop.Crop;
 }
-
-const defaultMarkerIconStyle: MarkerIconStyle = {
-    color: "red",
-    height: 16,
-    width: 16,
-    type: "circle",
-};
-
 
 export default class App extends React.PureComponent<{}, AppState> {
 
+    private mapRef: HTMLElement | null;
+
     constructor(props: any) {
         super(props);
+
+        this.mapRef = null;
+        
         this.state = {
             markerLayers: [],
-            isImportWindowOpen: false,
+            isImportWindowOpen: false
         };
     }
 
@@ -84,30 +84,67 @@ export default class App extends React.PureComponent<{}, AppState> {
         });
     }
 
+    onMapCapture = async () => {
+        if(!this.mapRef) throw Error("Can't find reference of map wrapper.");
+        const dataUrl = await ImageManager.screenshotElement(this.mapRef);
+        this.setState({mapScreenShot: dataUrl})
+    }
+
+
     render() {
         return (
             <React.Fragment>
 
-                <MapView layers={this.state.markerLayers}/>
-            
-                <LayerList 
-                    onAddLayer={this.toggleOpenFileDialog}
-                    onLayerRemove={this.onLayerRemove} 
-                    onApplyLayerStyle={this.onApplyLayerStyle}
-                    layerNames={this.state.markerLayers.map(l => l.name)} />
+                <div style={mapWrapperStyle} ref={(e) => this.mapRef = e}>
+                    <MapView layers={this.state.markerLayers} onCapture={this.onMapCapture}/>
+                </div>
 
-                <Dialog 
-                    open={this.state.isImportWindowOpen} 
-                    onClose={()=>this.setState({isImportWindowOpen: false})}>
-                    <DialogTitle>Import file</DialogTitle>
-                    <DialogContent>
-                        <FileOpenDialog onOpenFiles={this.onOpenFiles} />
-                    </DialogContent>
-                </Dialog>
-            
+                <div style={layerListWrapperStyle}>
+                    <LayerList 
+                        onAddLayer={this.toggleOpenFileDialog}
+                        onLayerRemove={this.onLayerRemove} 
+                        onApplyLayerStyle={this.onApplyLayerStyle}
+                        layerNames={this.state.markerLayers.map(l => l.name)} />
+                </div>
+               
+                <Modal isOpen={this.state.isImportWindowOpen} onClose={() => this.setState({isImportWindowOpen: false})}>
+                    <FileOpenDialog onOpenFiles={this.onOpenFiles} />
+                </Modal>
+
+                <Modal isOpen={!!this.state.mapScreenShot} onClose={() => this.setState({mapScreenShot: undefined})}>
+                    <div className="crop-modal">
+                        <ImageCrop source={this.state.mapScreenShot}/>
+                    </div>
+                </Modal>
+
+                <div style={captureButtonWrapperStyle} >
+                    <button onClick={this.onMapCapture}>Capture</button>
+                </div>
+
             </React.Fragment>
 
         )
     }
-
 }
+
+const mapWrapperStyle: React.CSSProperties = {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    margin: "0px"
+};
+
+const layerListWrapperStyle: React.CSSProperties = {
+    position: "absolute",
+    width: "200px",
+    top: "12px",
+    left: "12px",
+};
+
+
+const captureButtonWrapperStyle: React.CSSProperties = {
+    position: "absolute",
+    width: "200px",
+    top: "12px",
+    left: "12px",
+};

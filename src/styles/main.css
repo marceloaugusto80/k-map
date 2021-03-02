@@ -76,3 +76,11 @@ body {
     min-width: 100px;
     min-height: 100px;
 }
+
+.crop-modal {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    transform: "translate(-20%, -20%)";
+}
+

@@ -13,7 +13,7 @@ module.exports = {
     devtool: "source-map",
 
     resolve: {
-        extensions: [".js", ".ts", ".jsx", ".tsx"]
+        extensions: [".css", ".js", ".ts", ".jsx", ".tsx"]
     },
 
     entry: { renderer: "./src/renderer-process.tsx" }, 
@@ -25,8 +25,8 @@ module.exports = {
 
     module: {
         rules: [
-            { test: /\.tsx?$/, include: path.resolve(__dirname, "src"), use: "ts-loader"},
-            { test: /\.css$/, include: path.resolve(__dirname, "src") , use: ["style-loader", "css-loader"]}
+            { test: /\.tsx?$/, use: "ts-loader"},
+            { test: /\.css$/, use: ["style-loader", "css-loader"]}
         ]
     },
 
