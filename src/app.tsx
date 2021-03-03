@@ -108,7 +108,9 @@ export default class App extends React.PureComponent<{}, AppState> {
                 </div>
                
                 <Modal isOpen={this.state.isImportWindowOpen} onClose={() => this.setState({isImportWindowOpen: false})}>
-                    <FileOpenDialog onOpenFiles={this.onOpenFiles} />
+                    <div style={fileDialogWrapperStyle}>
+                        <FileOpenDialog onOpenFiles={this.onOpenFiles} />
+                    </div>
                 </Modal>
 
                 <Modal isOpen={!!this.state.mapScreenShot} onClose={() => this.setState({mapScreenShot: undefined})}>
@@ -137,14 +139,18 @@ const mapWrapperStyle: React.CSSProperties = {
 const layerListWrapperStyle: React.CSSProperties = {
     position: "absolute",
     width: "200px",
-    top: "12px",
-    left: "12px",
+    top: "8px",
+    left: "8px",
 };
 
 
 const captureButtonWrapperStyle: React.CSSProperties = {
     position: "absolute",
-    width: "200px",
-    top: "12px",
-    left: "12px",
+    right: "8px",
+    bottom: "8px",
 };
+
+const fileDialogWrapperStyle: React.CSSProperties = {
+    backgroundColor: "white",
+    padding: "8px",
+}

@@ -60,8 +60,8 @@ export default class LayerList extends React.PureComponent<Props, State> {
 
     render() {
         return (
-            <div className="layer-list float-container lv1">
-                <button onClick={this.props.onAddLayer} className="block">Add layer...</button>
+            <div style={listWrapperStyle}>
+                <button onClick={this.props.onAddLayer} >Add layer...</button>
                 <hr/>
                 {
                     this.props.layerNames.map((name, i) => 
@@ -88,3 +88,8 @@ export default class LayerList extends React.PureComponent<Props, State> {
 
 }
 
+const listWrapperStyle: React.CSSProperties = {
+    position: "relative",
+    backgroundColor: "white",
+    padding: "4px"
+}

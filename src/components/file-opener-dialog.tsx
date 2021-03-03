@@ -28,7 +28,7 @@ export default class FileOpenDialog extends React.Component<Props, State> {
         
     }
     
-    onOpenFileClick = () => {
+    onOpenFileClick = (ev: React.MouseEvent<HTMLElement>) => {
         if(this.fileInputRef) {
             this.fileInputRef.current?.click()
         }
@@ -65,12 +65,12 @@ export default class FileOpenDialog extends React.Component<Props, State> {
                 
                 <p>
                     <span> Open file: </span>
-                    <button className="in-line" onClick={this.onOpenFileClick}>Open...</button> 
+                    <button onClick={this.onOpenFileClick}>Open...</button> 
                 </p>
                 
                 <p>or drag files below:</p>
                 
-                <div className="drop-file"
+                <div
                     onDragEnter={this.onDragEnter} 
                     onDragExit={this.onDragExit}
                     onDragOver={this.onDragOver}
@@ -102,7 +102,6 @@ const passiveStyle: React.CSSProperties = {
     borderStyle: "solid",
     backgroundColor: "#00000088"
 }
-
 
 const dragStyle: React.CSSProperties = {
     width: "100%",

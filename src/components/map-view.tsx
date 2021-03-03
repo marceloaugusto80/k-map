@@ -47,11 +47,15 @@ export default class MapView extends React.PureComponent<Props, State> {
     
     render() {
             return (
-                <div id="map" ref={this.onMapRender} className="map"></div>
+                <div style={mapStyle}  ref={this.onMapRender} ></div>
             );
     }
 
 }
 
-
+const mapStyle: React.CSSProperties = {
+    position: "relative",
+    width: "100%",
+    height: "100%"
+}
 
