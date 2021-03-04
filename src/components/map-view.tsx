@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import MapEx from "../core/map-ex";
 import { MarkerLayer } from "../core/models";
 
@@ -8,28 +8,21 @@ interface Props {
     onCapture?: (imgData: string)=>void;
 }
 
-interface State {
-    isRendered: boolean;
-}
-
-export default class MapView extends React.PureComponent<Props, State> {
+export default class MapView extends React.PureComponent<Props, any> {
 
     map: MapEx;
-    target?: HTMLElement;
+    target: HTMLDivElement | null;
 
     constructor(props: any) {
         super(props);
+        this.target = null;
         this.map = new MapEx();
-        this.state = {
-            isRendered: false
-        };
     }
 
-    onMapRender = (instance: HTMLDivElement | null) => {
-        if(!instance) throw new Error("Map ref is not defined.");
-        this.target = instance;
-        this.map.render(instance);
-        this.setState({isRendered: true});
+
+    componentDidMount = () => {
+        if(!this.target) throw new Error("Map ref is not defined.");
+        this.map.render(this.target);
     }
 
     componentDidUpdate = (prevProps: Props) => {
@@ -47,7 +40,7 @@ export default class MapView extends React.PureComponent<Props, State> {
     
     render() {
             return (
-                <div style={mapStyle}  ref={this.onMapRender} ></div>
+                <div style={mapStyle} ref={(e) => this.target = e} ></div>
             );
     }
 

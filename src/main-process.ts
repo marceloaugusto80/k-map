@@ -9,7 +9,8 @@ function createWindow() {
         }
     });
 
-    win.loadFile("./renderer/index.html");
+    win.loadURL("http://localhost:9000");
+    //win.loadFile("./renderer/index.html");
 }
 
 

@@ -1,7 +1,5 @@
 const copyWebpackPlugin = require("copy-webpack-plugin");
 const path = require("path");
-const { CleanPlugin } = require("webpack");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
 
@@ -18,7 +16,7 @@ module.exports = {
 
     module: {
         rules: [
-            { test: /\.ts/, loader: "ts-loader" }
+            { test: /\.ts$/, loader: "ts-loader" }
         ]
     },
 

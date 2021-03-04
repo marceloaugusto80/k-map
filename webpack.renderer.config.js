@@ -1,5 +1,4 @@
 const path = require("path");
-const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { CleanPlugin } = require("webpack");
@@ -37,7 +36,12 @@ module.exports = {
             patterns: [
                 { from: "src/resources", to: "resources" }
             ]
-        })
-    ]
+        }),
+    ],
+
+    devServer: {
+        contentBase: "./dist/renderer",
+        port: 9000
+    }
 
 }
