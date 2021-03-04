@@ -1,11 +1,13 @@
 const copyWebpackPlugin = require("copy-webpack-plugin");
 const path = require("path");
 
+const isDev = process.env.NODE_ENV != "production";
+
 module.exports = {
 
     target: "electron-main",
 
-    mode: "development",
+    mode: isDev ? "development" : "production",
 
     entry: { main: "./src/main-process.ts"},
 

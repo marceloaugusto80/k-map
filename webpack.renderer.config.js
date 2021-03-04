@@ -3,13 +3,16 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { CleanPlugin } = require("webpack");
 
+const env = process.env.NODE_ENV;
+const isDev = env != "production";
+
 module.exports = {
 
-    mode: "development",
+    mode: isDev ? "development" : "production",
 
     target: "electron-renderer",
 
-    devtool: "source-map",
+    devtool: isDev ? "source-map" : undefined, 
 
     resolve: {
         extensions: [".css", ".js", ".ts", ".jsx", ".tsx"]

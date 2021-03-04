@@ -1,5 +1,8 @@
 import { app, BrowserWindow } from "electron";
 
+const isDev = process.env["NODE_ENV"] != "production";
+console.log(isDev ? "## DEV MODE" : "## PROD MODE");
+
 function createWindow() {
     const win = new BrowserWindow({
         width: 800,
@@ -9,8 +12,8 @@ function createWindow() {
         }
     });
 
-    win.loadURL("http://localhost:9000");
-    //win.loadFile("./renderer/index.html");
+    if(isDev) win.loadURL("http://localhost:9000");
+    else win.loadFile("./renderer/index.html");
 }
 
 
