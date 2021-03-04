@@ -70,7 +70,7 @@ export default class ImageCrop extends React.PureComponent<Props, State> {
 }
 
 const wrapperStyle: React.CSSProperties = {
-    position: "absolute",
+    position: "relative",
     width: "100%",
     height: "100%",
     display: "grid",

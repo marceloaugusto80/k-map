@@ -1,4 +1,3 @@
-import { transform } from "lodash";
 import * as React from "react";
 
 interface Props {
@@ -6,7 +5,6 @@ interface Props {
     onClose: ()=>void;
     position?: number[];
     children?: React.ReactNode;
-
 }
 
 export default class Modal extends React.PureComponent<Props, {}> {
@@ -50,23 +48,16 @@ function createChildStyle(pos?: number[]): React.CSSProperties {
 
     if(pos && pos.length == 2) {
         style.left = `${pos[0]}px`;
-        style.right = `${pos[1]}px`;
+        style.top = `${pos[1]}px`;
         style.transform = undefined;
     } 
 
     return style;
 }
 
-const childDefaultStyle: React.CSSProperties = {
-    position: "relative",
-    left: "50%",
-    top: "50%",
-    transform: "translate(-50%, -50%)"
-}
-
 const wrapperStyle: React.CSSProperties = {
     position: "fixed",
-    backgroundColor: "#00000049",
+    backgroundColor: "rgba(0, 0, 0, 0.85)",
     width: "100%",
     height: "100%",
     left: 0,

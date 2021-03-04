@@ -107,6 +107,10 @@ export default class App extends React.PureComponent<{}, AppState> {
                         layerNames={this.state.markerLayers.map(l => l.name)} />
                 </div>
                
+                <div style={captureButtonWrapperStyle} >
+                    <button onClick={this.onMapCapture}>Capture</button>
+                </div>
+
                 <Modal isOpen={this.state.isImportWindowOpen} onClose={() => this.setState({isImportWindowOpen: false})}>
                     <div style={fileDialogWrapperStyle}>
                         <FileOpenDialog onOpenFiles={this.onOpenFiles} />
@@ -114,14 +118,8 @@ export default class App extends React.PureComponent<{}, AppState> {
                 </Modal>
 
                 <Modal isOpen={!!this.state.mapScreenShot} onClose={() => this.setState({mapScreenShot: undefined})}>
-                    <div className="crop-modal">
                         <ImageCrop source={this.state.mapScreenShot}/>
-                    </div>
                 </Modal>
-
-                <div style={captureButtonWrapperStyle} >
-                    <button onClick={this.onMapCapture}>Capture</button>
-                </div>
 
             </React.Fragment>
 
@@ -143,7 +141,6 @@ const layerListWrapperStyle: React.CSSProperties = {
     left: "8px",
 };
 
-
 const captureButtonWrapperStyle: React.CSSProperties = {
     position: "absolute",
     right: "8px",
@@ -153,4 +150,11 @@ const captureButtonWrapperStyle: React.CSSProperties = {
 const fileDialogWrapperStyle: React.CSSProperties = {
     backgroundColor: "white",
     padding: "8px",
+}
+
+const captureWindowWrapperStyle: React.CSSProperties = {
+    position: "fixed",
+    inset: "100px",
+    width: "100%",
+    height: "100%"
 }
