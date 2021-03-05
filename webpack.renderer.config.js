@@ -1,6 +1,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const { DllReferencePlugin } = require("webpack");
 const { CleanPlugin } = require("webpack");
 
 const env = process.env.NODE_ENV;
@@ -40,6 +41,10 @@ module.exports = {
                 { from: "src/resources", to: "resources" }
             ]
         }),
+        new DllReferencePlugin({
+            context: path.join(__dirname, "dist"),
+            manifest: path.join(__dirname, "dist", "build", "vendor-manifest.json")
+        })
     ],
 
     devServer: {

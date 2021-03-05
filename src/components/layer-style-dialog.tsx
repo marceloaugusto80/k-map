@@ -1,8 +1,7 @@
 import * as React from "react";
 import { MarkerIconStyle, IconNames } from "../core/models";
-import { FormControl, Input, InputLabel, Select, TextField, MenuItem, Button } from "@material-ui/core";
+import { FormControl, Select, MenuItem, Button } from "@material-ui/core";
 import ColorPicker from "./color-picker";
-import { SelectInputProps } from "@material-ui/core/Select/SelectInput";
 import { IconFactory } from "../core/icon-factory";
 
 

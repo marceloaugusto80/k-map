@@ -1,4 +1,5 @@
-const copyWebpackPlugin = require("copy-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const { DllReferencePlugin } = require("webpack");
 const path = require("path");
 
 const isDev = process.env.NODE_ENV != "production";
@@ -23,10 +24,14 @@ module.exports = {
     },
 
     plugins: [
-        new copyWebpackPlugin({
+        new CopyWebpackPlugin({
             patterns: [
                 { from: "package.json"}
             ]
+        }),
+        new DllReferencePlugin({
+            context: path.join(__dirname, "dist"),
+            manifest: path.join(__dirname, "dist", "build", "vendor-manifest.json")
         })
     ]
 }

@@ -1,6 +1,4 @@
 import * as React from "react";
-import { LayerFactory } from "../core/layer-factory";
-import { MarkerLayer } from "../core/models";
 
 
 interface Props {
