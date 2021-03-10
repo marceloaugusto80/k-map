@@ -1,44 +1,35 @@
-import OlMap from "ol/Map";
-import View from "ol/View";
+import * as ol from "ol";
+import * as olStyle from "ol/style";
+import * as olGeom from "ol/geom";
+import * as olSource from "ol/source";
 import TileLayer from "ol/layer/Tile";
-import OSM from "ol/source/OSM";
-import MapBrowserEvent from "ol/MapBrowserEvent";
-import { MarkerLayer } from "./models";
-import { Feature } from "ol";
-import Point from "ol/geom/Point";
-import Style from "ol/style/Style";
-import Text from "ol/style/Text";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
-import Geometry from "ol/geom/Geometry";
-import Fill from "ol/style/Fill";
 import { fromLonLat } from "ol/proj";
-import Icon from "ol/style/Icon"
 import * as OlControl from "ol/control"
-import { IconFactory } from "./icon-factory";
 import _ from "lodash";
-
+import { MarkerLayer } from "./models";
+import { IconFactory } from "./icon-factory";
 
 
 export default class MapEx {
     private layerNames: string[];
-    private map: OlMap;
-    private view: View;
+    private map: ol.Map;
+    private view: ol.View;
 
     constructor() {
         this.layerNames = [];
-
         let mapLayers = [
             new TileLayer({
-                source: new OSM()
+                source: new olSource.OSM()
             })];
         
-        this.view = new View({
+        this.view = new ol.View({
             center: [0, 0],
             zoom: 1
         });
-
-        this.map = new OlMap({
+        
+        this.map = new ol.Map({
             view: this.view,
             layers: mapLayers,
             controls: OlControl.defaults({
@@ -59,7 +50,7 @@ export default class MapEx {
         
         if(this.layerNames.indexOf(layer.name) != -1) return; 
 
-        const olIcon = new Icon({
+        const olIcon = new olStyle.Icon({
             src: IconFactory.createSvgUrlData(layer.icon)
         });
 
@@ -68,7 +59,7 @@ export default class MapEx {
 
         let olLayer = new VectorLayer({
             className: layer.name,
-            source: new VectorSource<Geometry>({
+            source: new VectorSource<olGeom.Geometry>({
                 features: olFeatures
             }),
         });
@@ -102,24 +93,25 @@ export default class MapEx {
         this.map.setTarget(element);
     }
 
-    private onMapClick = (ev: MapBrowserEvent) => {
+    private onMapClick = (ev: ol.MapBrowserEvent) => {
         console.log("map clicked!!");
     }
     
-    private convertMakerToFeature(lon: number, lat: number, caption: string, captionOffset: number, icon: Icon): Feature {
+    private convertMakerToFeature(
+        lon: number, lat: number, caption: string, captionOffset: number, icon: olStyle.Icon): ol.Feature {
     
-        let point = new Point(fromLonLat([lon, lat], this.view.getProjection()));
+        let point = new olGeom.Point(fromLonLat([lon, lat], this.view.getProjection()));
     
-        let feature = new Feature(point);
+        let feature = new ol.Feature(point);
         
-        let text = new Text({
+        let text = new olStyle.Text({
             offsetX: captionOffset,
             text: caption,
             textAlign: "left",
-            fill: new Fill({color: "black"})
+            fill: new olStyle.Fill({color: "black"})
         }); 
         
-        feature.setStyle(new Style({ 
+        feature.setStyle(new olStyle.Style({ 
             image: icon,
             text: text 
         }));

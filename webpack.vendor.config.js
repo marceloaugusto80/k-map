@@ -13,6 +13,15 @@ module.exports = {
     
     entry: {
         vendor: [
+            "ol",
+            "ol/style",
+            "ol/geom",
+            "ol/source",
+            "ol/layer/Tile",
+            "ol/source/Vector",
+            "ol/layer/Vector",
+            "ol/proj",
+            "ol/control",
             "@material-ui/core",
             "@material-ui/icons",
             "electron", 
