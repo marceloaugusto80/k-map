@@ -3,3 +3,4 @@ node_modules
 temp
 out
 build
+.vscode/settings.json
