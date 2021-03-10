@@ -1,4 +1,4 @@
-const { DllPlugin } = require("webpack");
+const { DllPlugin, CleanPlugin } = require("webpack");
 const path = require("path");
 
 module.exports = {
@@ -6,6 +6,10 @@ module.exports = {
     target: "node",
 
     mode: "production",
+
+    resolve: {
+        extensions: [".js"]
+    },
     
     entry: {
         vendor: [
@@ -23,15 +27,16 @@ module.exports = {
     },
 
     output: {
-        filename: "vendor.js",
         path: path.join(__dirname, "build"),
+        filename: "vendor.js",
         library: "vendorlib"
     },
 
     plugins: [
+        
         new DllPlugin({
             name: "vendorlib",
-            path: path.join(__dirname, "dist", "build", "vendor-manifest.json")
+            path: path.join(__dirname, "build", "manifest.json")
         })
     ]
 };

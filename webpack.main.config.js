@@ -30,8 +30,8 @@ module.exports = {
             ]
         }),
         new DllReferencePlugin({
-            context: path.join(__dirname, "dist"),
-            manifest: path.join(__dirname, "dist", "build", "vendor-manifest.json")
+            context: path.join(__dirname, "build"),
+            manifest: path.join(__dirname, "build", "manifest.json")
         })
     ]
 }
