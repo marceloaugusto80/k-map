@@ -9,6 +9,7 @@ interface Props {
 }
 interface State {
     crop?: ReactCrop.Crop;
+    percentCrop?: ReactCrop.PercentCrop;
     unit?: string;
     width?: number;
     aspect?: number;
@@ -24,22 +25,23 @@ export default class ImageCrop extends React.PureComponent<Props, State> {
     }
     
     onChange = (crop: ReactCrop.Crop, percentCrop: ReactCrop.PercentCrop) => {
-        this.setState({crop: crop});
+        this.setState({crop: crop, percentCrop: percentCrop});
         
     }
 
-    onComplete = (crop: ReactCrop.Crop, percentCrop: ReactCrop.PercentCrop) => {
-        console.log([crop, percentCrop]);
-    }
-
     onCrop = async () => {
-        const { crop } = this.state;
-        const { source } = this.props;
-        if(!crop || !source) return;
-        const {x, y, width, height} = crop;
-        if(!x || !y || !width || !height) return;
         try {
-            await ImageManager.cropToClipboard(source, x, y, width, height);
+            const { percentCrop } = this.state;
+            const { source } = this.props;
+            if(!source) throw Error("Could not resolve image source to crop.");
+            if(!percentCrop) throw Error("Could not resolve crop area.");
+            
+            const x = percentCrop.x || 0;
+            const y = percentCrop.y || 0;
+            const w = percentCrop.width || 0;
+            const h = percentCrop.height || 0;
+        
+            await ImageManager.cropToClipboard(source, x, y, w, h);
         } catch (error) {
             console.error(error);
         }
@@ -56,8 +58,7 @@ export default class ImageCrop extends React.PureComponent<Props, State> {
                             <ReactCrop 
                             crop={this.state.crop}
                             onChange={this.onChange} 
-                            src={this.props.source} 
-                            onComplete={this.onComplete} />
+                            src={this.props.source} />
                         </div>
                         <div className="crop-tool-bar">
                             <button onClick={this.onCrop}>Copy image</button>
